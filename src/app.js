@@ -1,5 +1,5 @@
 import { Scene, PerspectiveCamera, WebGLRenderer, Vector3 } from "three";
-import { Mesh, BoxGeometry, MeshBasicMaterial } from "three";
+import { Mesh, SphereGeometry, MeshBasicMaterial } from "three";
 import animate from "./animate";
 
 // Enable Hot Module Replacement:
@@ -27,7 +27,7 @@ loop(state);
 
 function init(state) {
   state.cube = new Mesh(
-    new BoxGeometry(1, 1, 1),
+    new SphereGeometry(1, 8, 8),
     new MeshBasicMaterial({
       color: 0x0ffff0,
       wireframe: true
@@ -36,14 +36,17 @@ function init(state) {
   state.scene.add(state.cube);
 
   state.fixo = new Mesh(
-    new BoxGeometry(0.5, 0.5, 0.5),
-    new MeshBasicMaterial({ color: 0xffff00 })
+    new SphereGeometry(0.5, 16, 16),
+    new MeshBasicMaterial({
+      color: 0xffff00,
+      wireframe: true
+    })
   );
   state.scene.add(state.fixo);
 
-  state.camera.position.y = -2;
-  state.camera.position.z = 3;
-  state.camera.lookAt(new Vector3(0, 3.5, 0));
+  state.camera.position.y = -3;
+  state.camera.position.z = 4;
+  state.camera.lookAt(new Vector3(0, 2.5, 0));
 }
 
 function loop() {
