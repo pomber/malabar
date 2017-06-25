@@ -1,5 +1,5 @@
-const { Scene, PerspectiveCamera, WebGLRenderer, Vector3 } = THREE;
-const { Mesh, BoxGeometry, MeshBasicMaterial } = THREE;
+import { Scene, PerspectiveCamera, WebGLRenderer, Vector3 } from "three";
+import { Mesh, BoxGeometry, MeshBasicMaterial } from "three";
 
 const W = window.innerWidth;
 const H = window.innerHeight;
@@ -32,9 +32,9 @@ function init() {
   );
   scene.add(fixo);
 
-  camera.position.y = -1;
+  camera.position.y = -2;
   camera.position.z = 3;
-  camera.lookAt(new Vector3(0, 1, 0));
+  camera.lookAt(new Vector3(0, 3.5, 0));
 }
 
 function animate() {

@@ -1,8 +1,15 @@
 {
+  "name": "malabar",
+  "version": "0.0.0",
   "dependencies": {
-    "watch-http-server": "^0.7.6"
+    "three": "^0.86.0"
+  },
+  "devDependencies": {
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
-    "dev": "watch-http-server"
+    "dev": "webpack-dev-server --inline --hot",
+    "build": "webpack"
   }
 }
