@@ -1,5 +1,11 @@
 import { Scene, PerspectiveCamera, WebGLRenderer, Vector3 } from "three";
 import { Mesh, BoxGeometry, MeshBasicMaterial } from "three";
+import animate from "./animate";
+
+// Enable Hot Module Replacement:
+if (module.hot) {
+  module.hot.accept("./animate");
+}
 
 const W = window.innerWidth;
 const H = window.innerHeight;
@@ -17,7 +23,7 @@ renderer.setSize(W, H);
 document.body.appendChild(renderer.domElement);
 
 init(state);
-animate(state);
+loop(state);
 
 function init(state) {
   state.cube = new Mesh(
@@ -40,10 +46,8 @@ function init(state) {
   state.camera.lookAt(new Vector3(0, 3.5, 0));
 }
 
-function animate() {
-  requestAnimationFrame(animate);
-  //cube.rotation.x += 0.01;
-  state.cube.rotation.y += 0.005;
-  state.fixo.position.y += 0.005;
+function loop() {
+  requestAnimationFrame(loop);
+  animate(state);
   renderer.render(state.scene, state.camera);
 }
