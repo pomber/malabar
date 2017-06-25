@@ -5,42 +5,45 @@ const W = window.innerWidth;
 const H = window.innerHeight;
 const GY = -9.8;
 
-const scene = new Scene();
-const camera = new PerspectiveCamera(70, W / H, 1, 1000);
+const state = {
+  scene: new Scene(),
+  camera: new PerspectiveCamera(70, W / H, 1, 1000),
+  cube: null,
+  fixo: null
+};
+
 const renderer = new WebGLRenderer();
 renderer.setSize(W, H);
-
 document.body.appendChild(renderer.domElement);
 
-let cube, fixo;
-init();
-animate();
+init(state);
+animate(state);
 
-function init() {
-  cube = new Mesh(
+function init(state) {
+  state.cube = new Mesh(
     new BoxGeometry(1, 1, 1),
     new MeshBasicMaterial({
       color: 0x0ffff0,
       wireframe: true
     })
   );
-  scene.add(cube);
+  state.scene.add(state.cube);
 
-  fixo = new Mesh(
+  state.fixo = new Mesh(
     new BoxGeometry(0.5, 0.5, 0.5),
     new MeshBasicMaterial({ color: 0xffff00 })
   );
-  scene.add(fixo);
+  state.scene.add(state.fixo);
 
-  camera.position.y = -2;
-  camera.position.z = 3;
-  camera.lookAt(new Vector3(0, 3.5, 0));
+  state.camera.position.y = -2;
+  state.camera.position.z = 3;
+  state.camera.lookAt(new Vector3(0, 3.5, 0));
 }
 
 function animate() {
   requestAnimationFrame(animate);
   //cube.rotation.x += 0.01;
-  cube.rotation.y += 0.005;
-  fixo.position.y += 0.005;
-  renderer.render(scene, camera);
+  state.cube.rotation.y += 0.005;
+  state.fixo.position.y += 0.005;
+  renderer.render(state.scene, state.camera);
 }
