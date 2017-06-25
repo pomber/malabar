@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "watch-http-server": "^0.7.6"
+  },
+  "scripts": {
+    "dev": "watch-http-server"
+  }
+}
