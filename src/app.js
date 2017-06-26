@@ -5,7 +5,7 @@ import {
   Vector3,
   Raycaster,
   Vector2,
-	Clock
+  Clock
 } from "three";
 import { Mesh, SphereGeometry, MeshBasicMaterial } from "three";
 import DragControls from "./drag-controls";
@@ -16,14 +16,15 @@ if (module.hot) {
   module.hot.accept("./animate");
 }
 
-const W = window.innerWidth;
-const H = window.innerHeight;
+const W = document.documentElement.clientWidth;
+const H = document.documentElement.clientHeight;
+console.log(W, H);
 
 const state = {
   scene: new Scene(),
   camera: new PerspectiveCamera(40, W / H, 1, 1000),
-	clock: new Clock(),
-  balls: null,
+  clock: new Clock(),
+  balls: null
 };
 
 const renderer = new WebGLRenderer();
@@ -32,7 +33,7 @@ renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 const raycaster = new Raycaster();
 
-window.addEventListener("resize", onWindowResize, false);
+//window.addEventListener("resize", onWindowResize, false);
 // document.addEventListener("mousedown", onDocumentMouseDown, false);
 // document.addEventListener("touchstart", onDocumentTouchStart, false);
 
@@ -40,31 +41,37 @@ init(state);
 loop(state);
 
 function init(state) {
-	state.balls = [];
-	const size = 0.3;
-  state.balls.push(new Mesh(
-    new SphereGeometry(size, 8, 8),
-    new MeshBasicMaterial({
-      color: 0xff0000,
-      wireframe: true
-    })
-  ));
-  state.balls.push(new Mesh(
-    new SphereGeometry(size, 8, 8),
-    new MeshBasicMaterial({
-      color: 0x00ff00,
-      wireframe: true
-    })
-  ));
-  state.balls.push(new Mesh(
-    new SphereGeometry(size, 8, 8),
-    new MeshBasicMaterial({
-      color: 0x0000ff,
-      wireframe: true
-    })
-  ));
+  state.balls = [];
+  const size = 0.3;
+  state.balls.push(
+    new Mesh(
+      new SphereGeometry(size, 8, 8),
+      new MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe: true
+      })
+    )
+  );
+  state.balls.push(
+    new Mesh(
+      new SphereGeometry(size, 8, 8),
+      new MeshBasicMaterial({
+        color: 0x00ff00,
+        wireframe: true
+      })
+    )
+  );
+  state.balls.push(
+    new Mesh(
+      new SphereGeometry(size, 8, 8),
+      new MeshBasicMaterial({
+        color: 0x0000ff,
+        wireframe: true
+      })
+    )
+  );
 
-	state.balls.forEach(ball => state.scene.add(ball));
+  state.balls.forEach(ball => state.scene.add(ball));
 
   state.camera.position.y = -2;
   state.camera.position.z = 6;
@@ -76,15 +83,15 @@ function init(state) {
   );
   dragControls.addEventListener("dragstart", function(event) {
     console.log("dragstart", event.object.position);
-		state.dragging = event.object;
+    state.dragging = event.object;
   });
   dragControls.addEventListener("drag", function(event) {
     // console.log("drag", event.object.position);
   });
   dragControls.addEventListener("dragend", function(event) {
     console.log("dragend", event.object.position);
-		state.dragging = null;
-		state.thrown = event.object;
+    state.dragging = null;
+    state.thrown = event.object;
   });
 }
 
@@ -95,10 +102,12 @@ function loop() {
 }
 
 function onWindowResize() {
-  state.camera.aspect = window.innerWidth / window.innerHeight;
+  state.camera.aspect =
+    document.documentElement.clientWidth /
+    document.documentElement.clientHeight;
   state.camera.updateProjectionMatrix();
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(document.documentElement.clientWidth, window.clientHeight);
 }
 
 function onDocumentTouchStart(event) {
