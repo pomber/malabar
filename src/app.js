@@ -4,7 +4,8 @@ import {
   WebGLRenderer,
   Vector3,
   Raycaster,
-  Vector2
+  Vector2,
+	Clock
 } from "three";
 import { Mesh, SphereGeometry, MeshBasicMaterial } from "three";
 import DragControls from "./drag-controls";
@@ -17,13 +18,12 @@ if (module.hot) {
 
 const W = window.innerWidth;
 const H = window.innerHeight;
-const GY = -9.8;
 
 const state = {
   scene: new Scene(),
-  camera: new PerspectiveCamera(70, W / H, 1, 1000),
-  cube: null,
-  fixo: null
+  camera: new PerspectiveCamera(40, W / H, 1, 1000),
+	clock: new Clock(),
+  balls: null,
 };
 
 const renderer = new WebGLRenderer();
@@ -40,39 +40,51 @@ init(state);
 loop(state);
 
 function init(state) {
-  state.cube = new Mesh(
-    new SphereGeometry(1, 8, 8),
+	state.balls = [];
+	const size = 0.3;
+  state.balls.push(new Mesh(
+    new SphereGeometry(size, 8, 8),
     new MeshBasicMaterial({
-      color: 0x0ffff0,
+      color: 0xff0000,
       wireframe: true
     })
-  );
-  state.scene.add(state.cube);
-
-  state.fixo = new Mesh(
-    new SphereGeometry(0.5, 4, 4),
+  ));
+  state.balls.push(new Mesh(
+    new SphereGeometry(size, 8, 8),
     new MeshBasicMaterial({
-      color: 0xffff00,
+      color: 0x00ff00,
       wireframe: true
     })
-  );
-  state.scene.add(state.fixo);
+  ));
+  state.balls.push(new Mesh(
+    new SphereGeometry(size, 8, 8),
+    new MeshBasicMaterial({
+      color: 0x0000ff,
+      wireframe: true
+    })
+  ));
 
-  state.camera.position.y = -3;
-  state.camera.position.z = 4;
-  state.camera.lookAt(new Vector3(0, 2.5, 0));
+	state.balls.forEach(ball => state.scene.add(ball));
 
-  const objects = [state.cube, state.fixo];
+  state.camera.position.y = -2;
+  state.camera.position.z = 6;
+  state.camera.lookAt(new Vector3(0, 2, 0));
   var dragControls = new DragControls(
-    objects,
+    state.balls,
     state.camera,
     renderer.domElement
   );
   dragControls.addEventListener("dragstart", function(event) {
     console.log("dragstart", event.object.position);
+		state.dragging = event.object;
+  });
+  dragControls.addEventListener("drag", function(event) {
+    // console.log("drag", event.object.position);
   });
   dragControls.addEventListener("dragend", function(event) {
     console.log("dragend", event.object.position);
+		state.dragging = null;
+		state.thrown = event.object;
   });
 }
 
