@@ -7,6 +7,7 @@ import {
   Vector2
 } from "three";
 import { Mesh, SphereGeometry, MeshBasicMaterial } from "three";
+import DragControls from "./drag-controls";
 import animate from "./animate";
 
 // Enable Hot Module Replacement:
@@ -32,8 +33,8 @@ document.body.appendChild(renderer.domElement);
 const raycaster = new Raycaster();
 
 window.addEventListener("resize", onWindowResize, false);
-document.addEventListener("mousedown", onDocumentMouseDown, false);
-document.addEventListener("touchstart", onDocumentTouchStart, false);
+// document.addEventListener("mousedown", onDocumentMouseDown, false);
+// document.addEventListener("touchstart", onDocumentTouchStart, false);
 
 init(state);
 loop(state);
@@ -49,7 +50,7 @@ function init(state) {
   state.scene.add(state.cube);
 
   state.fixo = new Mesh(
-    new SphereGeometry(0.5, 16, 16),
+    new SphereGeometry(0.5, 4, 4),
     new MeshBasicMaterial({
       color: 0xffff00,
       wireframe: true
@@ -60,6 +61,19 @@ function init(state) {
   state.camera.position.y = -3;
   state.camera.position.z = 4;
   state.camera.lookAt(new Vector3(0, 2.5, 0));
+
+  const objects = [state.cube, state.fixo];
+  var dragControls = new DragControls(
+    objects,
+    state.camera,
+    renderer.domElement
+  );
+  dragControls.addEventListener("dragstart", function(event) {
+    console.log("dragstart", event.object.position);
+  });
+  dragControls.addEventListener("dragend", function(event) {
+    console.log("dragend", event.object.position);
+  });
 }
 
 function loop() {
