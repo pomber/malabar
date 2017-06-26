@@ -5,11 +5,15 @@
     "three": "^0.86.0"
   },
   "devDependencies": {
+    "now": "^7.1.0",
+    "serve": "^6.0.0",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
     "dev": "webpack-dev-server --inline --hot",
-    "build": "webpack -p"
+    "build": "webpack",
+    "deploy": "now --public",
+    "start": "serve"
   }
 }
