@@ -23,7 +23,7 @@ const DragControls = function(_objects, _camera, _domElement) {
     _camera = temp;
   }
 
-  var _plane = new Plane();
+  var _plane = new Plane(new Vector3(0, 0, 1));
   var _raycaster = new Raycaster();
 
   var _mouse = new Vector2();
@@ -80,10 +80,10 @@ const DragControls = function(_objects, _camera, _domElement) {
     if (intersects.length > 0) {
       var object = intersects[0].object;
 
-      _plane.setFromNormalAndCoplanarPoint(
-        _camera.getWorldDirection(_plane.normal),
-        object.position
-      );
+      // _plane.setFromNormalAndCoplanarPoint(
+      //   _camera.getWorldDirection(_plane.normal),
+      //   object.position
+      // );
 
       if (_hovered !== object) {
         scope.dispatchEvent({ type: "hoveron", object: object });
