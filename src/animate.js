@@ -4,17 +4,13 @@ const G = new Vector3(0, -9.8, 0).multiplyScalar(0.1);
 const XW = 2.5;
 
 export default state => {
+  // thrown is set to a ball when a ball was thrown
+  // dragging is set to a ball when the user starts dragging it
   const { clock, balls, thrown, dragging } = state;
   const delta = clock.getDelta();
 
   if (thrown) {
-    const data = thrown.userData;
-    const oldPosition = data.prevPosition;
-    const newPosition = thrown.position;
-    const moved = newPosition.clone().sub(oldPosition);
-    data.speed = moved.multiplyScalar(1 / delta);
-    console.log(oldPosition);
-    console.log(newPosition);
+    console.log("thrown at ", thrown.userData.speed);
     state.thrown = null;
   }
 
@@ -22,6 +18,13 @@ export default state => {
     const position = ball.position;
     const data = ball.userData;
     const speed = data.speed || new Vector3(0, 0, 0);
+
+    if (ball == dragging) {
+      const moved = position.clone().sub(data.prevPosition);
+      data.speed = moved.multiplyScalar(1 / delta);
+      data.prevPosition = position.clone();
+      return;
+    }
 
     data.prevPosition = position.clone();
     data.speed = speed;
