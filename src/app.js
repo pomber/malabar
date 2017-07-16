@@ -129,9 +129,4 @@ function onDocumentMouseDown(event) {
 
   const objects = [state.cube, state.fixo];
   const intersects = raycaster.intersectObjects(objects);
-
-  if (intersects.length > 0) {
-    intersects[0].object.material.color.setHex(Math.random() * 0xffffff);
-    console.log(intersects[0].point);
-  }
 }

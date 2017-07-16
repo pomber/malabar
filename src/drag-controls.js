@@ -13,6 +13,12 @@ import {
   EventDispatcher
 } from "three";
 
+const USE_POINTER_EVENTS = "onpointerdown" in document.createElement("div");
+const MOVE = USE_POINTER_EVENTS ? "pointermove" : "touchmove";
+const START = USE_POINTER_EVENTS ? "pointerdown" : "touchstart";
+const END = USE_POINTER_EVENTS ? "pointerup" : "touchend";
+const CANCEL = USE_POINTER_EVENTS ? "pointercancel" : "touchcancel";
+
 const DragControls = function(_objects, _camera, _domElement) {
   if (_objects instanceof Camera) {
     console.warn(
@@ -38,15 +44,19 @@ const DragControls = function(_objects, _camera, _domElement) {
   var scope = this;
 
   function activate() {
-    _domElement.addEventListener("mousemove", onDocumentMouseMove, false);
-    _domElement.addEventListener("mousedown", onDocumentMouseDown, false);
-    _domElement.addEventListener("mouseup", onDocumentMouseUp, false);
+    _domElement.addEventListener(MOVE, onDocumentMouseMove);
+    _domElement.addEventListener(START, onDocumentMouseDown, {
+      passive: false
+    });
+    _domElement.addEventListener(END, onDocumentMouseUp, { passive: false });
+    _domElement.addEventListener(CANCEL, onDocumentMouseUp, { passive: false });
   }
 
   function deactivate() {
-    _domElement.removeEventListener("mousemove", onDocumentMouseMove, false);
-    _domElement.removeEventListener("mousedown", onDocumentMouseDown, false);
-    _domElement.removeEventListener("mouseup", onDocumentMouseUp, false);
+    _domElement.removeEventListener(MOVE, onDocumentMouseMove);
+    _domElement.removeEventListener(START, onDocumentMouseDown);
+    _domElement.removeEventListener(END, onDocumentMouseUp);
+    _domElement.removeEventListener(CANCEL, onDocumentMouseUp);
   }
 
   function dispose() {
@@ -102,7 +112,9 @@ const DragControls = function(_objects, _camera, _domElement) {
   }
 
   function onDocumentMouseDown(event) {
-    event.preventDefault();
+    var rect = _domElement.getBoundingClientRect();
+    _mouse.x = (event.clientX - rect.left) / rect.width * 2 - 1;
+    _mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     _raycaster.setFromCamera(_mouse, _camera);
 
@@ -122,8 +134,6 @@ const DragControls = function(_objects, _camera, _domElement) {
   }
 
   function onDocumentMouseUp(event) {
-    event.preventDefault();
-
     if (_selected) {
       scope.dispatchEvent({ type: "dragend", object: _selected });
 
