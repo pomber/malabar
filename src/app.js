@@ -5,6 +5,7 @@ import {
   Vector3,
   Raycaster,
   Vector2,
+  GridHelper,
   Clock
 } from "three";
 import { Mesh, SphereGeometry, MeshBasicMaterial } from "three";
@@ -20,9 +21,13 @@ const W = document.documentElement.clientWidth;
 const H = document.documentElement.clientHeight;
 console.log(W, H);
 
+const frustum = 60;
+const cameraz = 10;
+const lookaty = 0;
+
 const state = {
   scene: new Scene(),
-  camera: new PerspectiveCamera(40, W / H, 1, 1000),
+  camera: new PerspectiveCamera(frustum, W / H, 1, 1000),
   clock: new Clock(),
   balls: null
 };
@@ -40,42 +45,30 @@ const raycaster = new Raycaster();
 init(state);
 loop(state);
 
+function createBall(size, color) {
+  return new Mesh(
+    new SphereGeometry(size, 8, 8),
+    new MeshBasicMaterial({ color, wireframe: true })
+  );
+}
+
 function init(state) {
   state.balls = [];
-  const size = 0.3;
-  state.balls.push(
-    new Mesh(
-      new SphereGeometry(size, 8, 8),
-      new MeshBasicMaterial({
-        color: 0xff0000,
-        wireframe: true
-      })
-    )
-  );
-  state.balls.push(
-    new Mesh(
-      new SphereGeometry(size, 8, 8),
-      new MeshBasicMaterial({
-        color: 0x00ff00,
-        wireframe: true
-      })
-    )
-  );
-  state.balls.push(
-    new Mesh(
-      new SphereGeometry(size, 8, 8),
-      new MeshBasicMaterial({
-        color: 0x0000ff,
-        wireframe: true
-      })
-    )
-  );
-
+  const size = 0.6;
+  state.balls.push(createBall(size, 0xff0000));
+  state.balls.push(createBall(size, 0x00ff00));
+  state.balls.push(createBall(size, 0x0000ff));
   state.balls.forEach(ball => state.scene.add(ball));
 
-  state.camera.position.y = -2;
-  state.camera.position.z = 6;
-  state.camera.lookAt(new Vector3(0, 2, 0));
+  const gridSize = 30;
+  const plane = new GridHelper(gridSize, gridSize, 0x123456);
+  plane.rotation.set(Math.PI/2,0,0)
+  plane.position.y += gridSize/2;
+  state.scene.add(plane);
+
+  state.camera.position.y = 0;
+  state.camera.position.z = cameraz;
+  state.camera.lookAt(new Vector3(0, lookaty, 0));
   var dragControls = new DragControls(
     state.balls,
     state.camera,

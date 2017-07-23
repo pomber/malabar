@@ -1,7 +1,8 @@
 import { Vector3 } from "three";
 
-const G = new Vector3(0, -9.8, 0).multiplyScalar(0.1);
+const G = new Vector3(0, -9.8, 0).multiplyScalar(0.02);
 const XW = 2.5;
+const CAMERA_Z = 10;
 
 export default state => {
   // thrown is set to a ball when a ball was thrown
@@ -50,5 +51,36 @@ export default state => {
     }
   });
 
+  const ys = balls.map(b => b.position.y);
+  const maxy = Math.max(...ys);
+  state.camera.lookAt(new Vector3(0, 5, 0));
+  // console.log("maxy", maxy);
+
   return state;
 };
+
+const halfalpha = Math.atan(5, CAMERA_Z);
+const alpha = 2 * halfalpha;
+
+function moveCamera(camera, maxy) {
+  const t = maxy < 15 ? 15 : maxy;
+  const T = alpha;
+  const z = CAMERA_Z;
+  const Z = Math.asin(z * Math.sin(T) / t);
+  // const c = Math.sqrt()
+  const C = Math.PI - Z - T;
+  const c = Math.sin(C) * t / Math.sin(T);
+
+  const ny = Math.cos(C) * z;
+  const nz = Math.sin(C) * z;
+
+  const NY = Math.asin(ny / z);
+  const NZ = Math.PI / 2 - NY - T / 2;
+
+  const nt = z * Math.sin(T/2) / Math.sin(NZ);
+
+  camera.lookAt(new Vector3(0, nt, 0));
+  camera.position.y = -ny;
+  camera.position.z = nz;
+  console.log(maxy, nt, ny, nz);
+}
